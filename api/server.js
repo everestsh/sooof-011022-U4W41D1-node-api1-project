@@ -43,8 +43,31 @@ server.get('/api/users', async (req, res)=>{
 // [GET]    /api/users/:id (R of CRUD, fetch user by :id)
 // http get :9000/api/users -v ; get id
 // http get :9000/api/users/7Pg6T -v
-server.get('/api/users/:id', (req, res)=>{
-    res.json({message: "TEST: req user by id"})
+server.get('/api/users/:id', async (req, res)=>{
+    // res.json({message: "TEST: req user by id"})
+    // User.findById(req.params.id)
+    //     .then( user => {
+    //         // throw new Error("Argh!!!!!!")
+    //         res.status(200).json(user)
+    //     })
+    //     .catch( err=>{
+    //         req.status(500).json({
+    //             message: err.message,
+    //             err: err.message,
+    //             stack: err.stack
+    //         })
+    //     })
+
+    try{
+        const user = await User.findById(req.params.id)
+        res.status(200).json(user)
+    }catch(err){
+        res.status(500).json({
+            message: err.message,
+            err: err.message,
+            stack: err.stack
+        })
+    }
 })
 
 // TEST ok: http get :9000/dfvmdjn
