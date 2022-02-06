@@ -79,6 +79,53 @@ server.get('/api/users/:id', async (req, res)=>{
     }
 })
 
+// [POST]   /api/users     (C of CRUD, create new user from JSON payload)
+// TEST ERR: http post :9000/api/users -v 
+// TEST ERR: http post :9000/api/users name=foo bar=vooo -v
+// TEST ERR: http post :9000/api/users name=foo bar=vooo --verbos
+// TEST : http post :9000/api/users name=foo bio=vooo --verbos
+server.post('/api/users', async (req, res)=>{
+    // res.json({message: "TEST: create by endpoint"})
+    // const user = req.body
+    // if(!user || !user.bio){
+    //     res.status(400).json({ message: "Please provide name and bio for the user" })
+    // }else{
+    //     User.insert(user)
+    //         .then( newUser => {
+    //             // console.log(stuff)
+    //             res.status(201).json(newUser)
+    //         })
+    //         .catch( err=>{
+    //             res.status(500).json({
+    //                 message: err.message,
+    //                 err: err.message,
+    //                 stack: err.stack
+    //             })
+    //         })
+    // } 
+
+    try{
+        const user = req.body
+        if(!user || !user.bio){
+            res.status(400).json({ message: "Please provide name and bio for the user" })
+        }else{
+             const newUser = await  User.insert(user)
+            res.status(201).json(newUser)
+        }
+    }catch(err){
+        res.status(500).json({
+            message: err.message,
+            err: err.message,
+            stack: err.stack
+        })
+    }
+
+ })
+
+
+ // [PUT]    /api/users/:id (U of CRUD, update user with :id using JSON payload)
+ // [DELETE] /api/users/:id (D of CRUD, remove user with :id)
+
 // TEST ok: http get :9000/dfvmdjn
 server.use('*', (req, res)=>{
     res.status(404).json({
