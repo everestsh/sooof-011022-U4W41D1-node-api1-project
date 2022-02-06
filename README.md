@@ -145,3 +145,11 @@ Create a new React application and connect it to your server:
 - add a delete button to each displayed user that will remove it from the server.
 - add forms to add and update data.
 - Style the list of users however you see fit.
+
+
+```
+npm i -D nodemon
+npm i express
+
+https://bloomtech-1.wistia.com/medias/ppql0uuoxi
+```
