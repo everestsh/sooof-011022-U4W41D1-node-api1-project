@@ -125,10 +125,27 @@ server.post('/api/users', async (req, res)=>{
 
  // [PUT]    /api/users/:id (U of CRUD, update user with :id using JSON payload)
 // TEST : http get :9000/api/users  -v  ; to get id
-// TEST : http put :9000/api/users/sHvJT  -v
+// TEST : http put :9000/api/users/sHvJT  name=eee bio=rrr -v
 server.put('/api/users/:id', async (req, res)=>{
     // res.json({message: "TEST: update by endpoint"}) 
 
+    try{
+        const passibleUser = await User.findById(req.params.id) 
+        if(!passibleUser){
+            res.status(404).json({message: "The user with the specified ID does not exist"} )
+        }else if(!req.body.name || !req.body.bio) {
+            res.status(400).json({ message: "Please provide name and bio for the user" })
+        } else{
+            const updateUser = await User.update(req.params.id, req.body)
+            res.status(200).json(updateUser)
+        } 
+    }catch(err){
+        res.status(500).json({
+            message: err.message,
+            err: err.message,
+            stack: err.stack
+        })
+    }
 })
 
  // [DELETE] /api/users/:id (D of CRUD, remove user with :id)
@@ -136,14 +153,23 @@ server.put('/api/users/:id', async (req, res)=>{
 // TEST : http delete :9000/api/users/7Pg6T -v
  server.delete('/api/users/:id', async (req, res)=>{
     // res.json({message: "TEST: delete by endpoint"}) 
-    const passibleUser = await User.findById(req.params.id)
-    if(!passibleUser){
-        res.status(404).json({
-            message: 'The user with the specified ID does not exist'
+    
+    try{
+        const passibleUser = await User.findById(req.params.id)
+        if(!passibleUser){
+            res.status(404).json({
+                message: 'The user with the specified ID does not exist'
+            })
+        }else{
+            const deleteUser = await User.remove(passibleUser.id)
+            res.status(200).json(deleteUser)
+        }
+    }catch(err){
+        res.status(500).json({
+            message: err.message,
+            err: err.message,
+            stack: err.stack
         })
-    }else{
-        const deleteUser = await User.remove(passibleUser.id)
-        res.status(200).json(deleteUser)
     }
 })
 
