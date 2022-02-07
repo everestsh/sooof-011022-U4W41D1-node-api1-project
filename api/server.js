@@ -87,7 +87,7 @@ server.get('/api/users/:id', async (req, res)=>{
 server.post('/api/users', async (req, res)=>{
     // res.json({message: "TEST: create by endpoint"})
     // const user = req.body
-    // if(!user || !user.bio){
+    // if(!user.name || !user.bio){
     //     res.status(400).json({ message: "Please provide name and bio for the user" })
     // }else{
     //     User.insert(user)
@@ -106,7 +106,7 @@ server.post('/api/users', async (req, res)=>{
 
     try{
         const user = req.body
-        if(!user || !user.bio){
+        if(!user.name || !user.bio){
             res.status(400).json({ message: "Please provide name and bio for the user" })
         }else{
              const newUser = await  User.insert(user)
@@ -124,7 +124,28 @@ server.post('/api/users', async (req, res)=>{
 
 
  // [PUT]    /api/users/:id (U of CRUD, update user with :id using JSON payload)
+// TEST : http get :9000/api/users  -v  ; to get id
+// TEST : http put :9000/api/users/sHvJT  -v
+server.put('/api/users/:id', async (req, res)=>{
+    // res.json({message: "TEST: update by endpoint"}) 
+
+})
+
  // [DELETE] /api/users/:id (D of CRUD, remove user with :id)
+// TEST : http get :9000/api/users -v ; get id
+// TEST : http delete :9000/api/users/7Pg6T -v
+ server.delete('/api/users/:id', async (req, res)=>{
+    // res.json({message: "TEST: delete by endpoint"}) 
+    const passibleUser = await User.findById(req.params.id)
+    if(!passibleUser){
+        res.status(404).json({
+            message: 'The user with the specified ID does not exist'
+        })
+    }else{
+        const deleteUser = await User.remove(passibleUser.id)
+        res.status(200).json(deleteUser)
+    }
+})
 
 // TEST ok: http get :9000/dfvmdjn
 server.use('*', (req, res)=>{
